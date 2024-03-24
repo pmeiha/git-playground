@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My timer settings</title>
+    <link href="{{ url_for('static', filename='styles/styles.css') }}" rel="stylesheet" />
+</head>
+<body>
+    <h1>My timer settings</h1>
+    <form action="/set_timer">
+        <select id="dev_ip" name="dev_ip">
+            <option value="10.42.10.19">st03</option>
+            <option value="10.42.10.21">st05</option>
+        </select>
+        <button type="submit">submit</button>
+    </form>
+</body>
+</html>
