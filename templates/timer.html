@@ -3,11 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My timer settings</title>
+    <title>{{ title }} timer</title>
     <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" />
 </head>
 <body>
-    <h1>My timer settings</h1>
+    <h1>{{ title }} timer</h1>
+    <p>rc code is : {{ rc_code }}</p>
+    {% if not rc_code == 200 %}
+      <p>timer.bat not exists we will create a new one</p>
+    {% else %}  
+      <p>current timer</p><p>  
+      <table>
+        {{ current_timer | safe }}
+      </table>  
+    {% endif %} </p><br>
     <form action="/set_timer">
         <select id="dev_ip" name="dev_ip">
             <option value="10.42.10.19">st03</option>
