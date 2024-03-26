@@ -18,11 +18,11 @@ def line_form(line_nr, edit=True, delete=True, insert=True, etext="edit", dtext=
     t_out = ""
 
     if edit or delete or insert:
-        t_out += f'<form action="/edit_line"><input type="hidden" value="{
+        t_out += f'<form action="/edit_line"><input type="hidden" id="line_nr" value="{
             escape(line_nr)}">'
 
         if edit:
-            t_out += f'<button type="submit" name="edit">{
+            t_out += f'<button type="submit" id="edit">{
                 escape(etext)}</button>'
 
         if delete:
