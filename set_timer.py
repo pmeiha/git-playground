@@ -18,19 +18,19 @@ def line_form(line_nr, edit=True, delete=True, insert=True, etext="edit", dtext=
     t_out = ""
 
     if edit or delete or insert:
-        t_out += f'<form action="/edit_line"><input type="hidden" id="line_nr" value="{
+        t_out += f'<form action="/edit_line" method="get"><input type="hidden" id="line_nr" name="line_nr" value="{
             escape(line_nr)}">'
 
         if edit:
-            t_out += f'<button type="submit" id="edit">{
+            t_out += f'<button type="submit" id="edit" name="action" value="edit">{
                 escape(etext)}</button>'
 
         if delete:
-            t_out += f'<button type="submit" id="delete">{
+            t_out += f'<button type="submit" id="delete" name="action" value="delete">{
                 escape(dtext)}</button>'
 
         if insert:
-            t_out += f'<button type="submit" id="insert">{
+            t_out += f'<button type="submit" id="insert" name="action" value="insert">{
                 escape(itext)}</button>'
 
         t_out += '</form>'
@@ -41,7 +41,7 @@ def get_table(text_in):
 
     text_out = "<tr><th>1</th><th>2</th><th>3</th><th>4</th></tr>"
     line_nr = 1
-    for line in text_in.splitlines():
+    for line in text_in:
 
         hline = ""
 
@@ -59,6 +59,12 @@ def get_table(text_in):
                            }</td><td>2</td><td>3</td><td>4</td></tr>"
 
     return text_out
+
+
+def get_line(text_in, line_nr):
+    if line_nr <= len(text_in):
+        text_out = text_in[line_nr]
+    return "test_in " + str(text_out) + " Line " + str(line_nr)
 
 
 if __name__ == "__main__":

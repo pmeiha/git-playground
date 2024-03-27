@@ -9,14 +9,10 @@
 <body>
     <h1>{{ title }} timer</h1>
     <p>rc code is : {{ rc_code }}</p>
-    {% if not rc_code == 200 %}
-      <p>timer.bat not exists we will create a new one</p>
-    {% else %}  
-      <p>current timer</p><p>  
+      <p>current line {{ line_nr }}</p><p>  
       <table>
-        {{ current_timer | safe }}
+        {{ current_line | safe }}
       </table>  
-    {% endif %} </p><br>
     <form action="/set_timer">
         <select id="dev_ip" name="dev_ip">
             <option value="10.42.10.19">st03</option>
