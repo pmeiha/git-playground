@@ -7,18 +7,84 @@
     <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" />
 </head>
 <body>
-    <h1>{{ title }} timer</h1>
-    <p>rc code is : {{ rc_code }}</p>
-      <p>current line {{ line_nr }}</p><p>  
-      <table>
-        {{ current_line | safe }}
-      </table>  
-    <form action="/set_timer">
-        <select id="dev_ip" name="dev_ip">
-            <option value="10.42.10.19">st03</option>
-            <option value="10.42.10.21">st05</option>
-        </select>
-        <button type="submit">submit</button>
-    </form>
+  <h1>{{ title }} edit_line</h1>
+  <p>rc code is : {{ rc_code }}</p>
+  <p>current line {{ line_nr }}</p>  
+  <table>
+    {{ current_line | safe }}
+  </table>  
+  <table border="1">
+    <tr>
+      <td>
+        <table border="0">
+          <form action="/store_line" method="get"><input type="hidden" name="line_nr" id="line_nr" value="{{ line_nr }}">
+            <tr>
+              <td colspan="3">
+                <label for="time">Zeit</label>
+              </td>
+              <td colspan="4">
+                <input type="time" value={{ time_value }} name="time" id="time" step="1">
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <label for="daily">Täglich</label>
+              </td>
+              <td colspan="4">
+                <input type="checkbox" {{ daily }} name="daily" id="daily">
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">Sa&nbsp;
+                <input type="checkbox" {{ sa }} name="sa" id="sa" value="64">&nbsp;
+              </td>
+              <td style="text-align: center;">Fr&nbsp;
+                <input type="checkbox" {{ fr }} name="fr" id="fr" value="32">&nbsp;
+              </td>
+              <td style="text-align: center;">Do&nbsp;
+                <input type="checkbox" {{ do }} name="do" id="do" value="16">&nbsp;
+              </td>
+              <td style="text-align: center;">Mi&nbsp;
+                <input type="checkbox" {{ mi }} name="mi" id="mi" value="8">&nbsp;
+              </td>
+              <td style="text-align: center;">Di&nbsp;
+                <input type="checkbox" {{ di }} name="di" id="di" value="4">&nbsp;
+              </td>
+              <td style="text-align: center;">Mo&nbsp;
+                <input type="checkbox" {{ mo }} name="mo" id="mo" value="2">&nbsp;
+              </td>
+              <td style="text-align: center;">So&nbsp;
+                <input type="checkbox" {{ so }} name="so" id="so" value="1">&nbsp;
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">Power</td>
+              <td colspan="4">
+                <input type="radio" id="on" name="power" value="on" {{ on }}>
+                <label for="on">ON</label><br>
+                <input type="radio" id="off" name="power" value="off" {{ off }}>
+                <label for="off">OFF</label><br>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="7">
+                <button type="submit">Zeile speichern</button>
+              </td>
+            </tr>
+          </form>
+        </table>
+      </td>
+      <td>zweites fenster<br>
+          zweites fenster
+      </td>
+    </tr>
+  </table>                          
+  <form action="/set_timer">
+    <select id="dev_ip" name="dev_ip">
+      <option value="10.42.10.19">st03</option>
+      <option value="10.42.10.21">st05</option>
+    </select>
+    <button type="submit">lese vom Gerät</button>
+  </form>
 </body>
 </html>

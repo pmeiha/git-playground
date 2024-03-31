@@ -13,6 +13,14 @@ def get_timer(dev_ip):
     return timer_data
 
 
+def save_timer(file_text, dev_ip):
+    request_url = f'http://{dev_ip}/api/lfs/timer.bat'
+
+    ret_data = requests.post(request_url, file_text)
+
+    return ret_data
+
+
 def line_form(line_nr, edit=True, delete=True, insert=True, etext="edit", dtext="delete", itext="insert oben"):
 
     t_out = ""
@@ -39,16 +47,18 @@ def line_form(line_nr, edit=True, delete=True, insert=True, etext="edit", dtext=
 
 def get_table(text_in):
 
+    print("get_table text_in: ", text_in)
     text_out = "<tr><th>1</th><th>2</th><th>3</th><th>4</th></tr>"
     line_nr = 1
     for line in text_in:
+        print("line : ", line, " find: ", line.find('addClockEvent'))
 
         hline = ""
 
         if line.find('addClockEvent') == 0:
             sline = line.split(" ")
             hline = f"<tr><td>{
-                line_form(line_nr)}</td><td>{escape(sline[1])}</td><td>{escape(sline[2])}</td><td>{escape(sline[5])}</td></tr>"
+                line_form(line_nr)}</td><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(sline[2])}</td><td>&nbsp;{escape(sline[5])}</td></tr>"
             line_nr += 1
         # else:
         #     hline = f"<tr><td></td><td>{escape(line)}</td></tr>"
@@ -62,9 +72,10 @@ def get_table(text_in):
 
 
 def get_line(text_in, line_nr):
-    if line_nr <= len(text_in):
+    text_out = ""
+    if line_nr < len(text_in):
         text_out = text_in[line_nr]
-    return "test_in " + str(text_out) + " Line " + str(line_nr)
+    return "test_in " + text_out + " Line " + str(line_nr)
 
 
 if __name__ == "__main__":
