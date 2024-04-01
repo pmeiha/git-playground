@@ -2,7 +2,39 @@ from dotenv import load_dotenv
 from pprint import pprint
 from markupsafe import escape
 import requests
+import dns.resolver
 import os
+
+
+def scan_device(ip_prefix, start, end):
+
+    ip_list = []
+    device_list = []
+    dnsresolver = dns.resolver.Resolver(configure=False)
+    dnsresolver.nameservers = ["10.42.10.1"]
+
+    for i in range(start, end+1):
+        ip = f'{ip_prefix}.{i}'
+        request_url = f'http://{ip}'
+        try:
+            scan_data = requests.get(request_url, timeout=1)
+            if b'OpenBK7231T' in scan_data.content:
+                found = True
+
+        except:
+            found = False
+
+        if found:
+            ip_list.append(ip)
+
+    for ip in ip_list:
+        n = dns.reversename.from_address(ip)
+        try:
+            res = dnsresolver.query(n, 'PTR')
+        except:
+            res = []
+        device_list.append({'ip': ip, 'name': str(res[0]).split(".")[0]})
+    return device_list
 
 
 def get_timer(dev_ip):
@@ -21,7 +53,15 @@ def save_timer(file_text, dev_ip):
     return ret_data
 
 
-def line_form(line_nr, edit=True, delete=True, insert=True, etext="edit", dtext="delete", itext="insert oben"):
+def exec_timer(dev_ip):
+    request_url = f'http://{dev_ip}/api/cmnd'
+
+    ret_data = requests.post(request_url, "exec timer.bat")
+
+    return ret_data
+
+
+def line_form(line_nr, edit=True, delete=True, insert=True, etext="edit", dtext="delete", itext="oben einfügen"):
 
     t_out = ""
 
@@ -45,28 +85,40 @@ def line_form(line_nr, edit=True, delete=True, insert=True, etext="edit", dtext=
     return t_out
 
 
-def get_table(text_in):
+def get_table(text_in, without_action=False, spec_nr=0):
 
-    print("get_table text_in: ", text_in)
-    text_out = "<tr><th>1</th><th>2</th><th>3</th><th>4</th></tr>"
+    if without_action:
+        text_out = "<tr><th></th><th></th><th></th></tr>"
+    else:
+        text_out = "<tr><th></th><th></th><th></th><th></th></tr>"
+
     line_nr = 1
+
     for line in text_in:
         print("line : ", line, " find: ", line.find('addClockEvent'))
 
         hline = ""
+        spec_tag = ""
+        if line_nr == spec_nr:
+            spec_tag = ' class="specal" '
 
         if line.find('addClockEvent') == 0:
             sline = line.split(" ")
-            hline = f"<tr><td>{
-                line_form(line_nr)}</td><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(sline[2])}</td><td>&nbsp;{escape(sline[5])}</td></tr>"
+            if without_action:
+                hline = f"<tr{spec_tag}><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(
+                    get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>"
+            else:
+                hline = f"<tr{spec_tag}><td>{
+                    line_form(line_nr)}</td><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>"
             line_nr += 1
-        # else:
-        #     hline = f"<tr><td></td><td>{escape(line)}</td></tr>"
 
         text_out += hline
 
-    text_out += f"<tr><td>{line_form(line_nr, edit=False, delete=False, itext="insert new")
-                           }</td><td>2</td><td>3</td><td>4</td></tr>"
+    if without_action:
+        text_out += f"<tr><td></td><td></td><td></td></tr>"
+    else:
+        text_out += f"<tr><td>{line_form(line_nr, edit=False, delete=False, itext="Zeile anhängen")
+                               }</td><td></td><td></td><td></td></tr>"
 
     return text_out
 
@@ -76,6 +128,29 @@ def get_line(text_in, line_nr):
     if line_nr < len(text_in):
         text_out = text_in[line_nr]
     return "test_in " + text_out + " Line " + str(line_nr)
+
+
+def get_days(day_val=0, return_name=False):
+    daily = ["", "", "", "", "", "", "", ""]
+    dailyn = ["all", "Sa", "Fr", "Do", "Mi", "Di", "Mo", "So"]
+    daily_name = ""
+
+    base = 10
+    if day_val[0:2].lower() == '0x':
+        base = 16
+    day_str = f'{int(day_val, base):0>8b}'
+    i = 0
+    for bit in day_str:
+        if bit == "1":
+            daily[i] = "checked"
+            daily_name += dailyn[i] + ", "
+        i += 1
+    if return_name:
+        if "all" in daily_name:
+            daily_name = "all"
+        return daily_name.rstrip(", ")
+    else:
+        return daily
 
 
 if __name__ == "__main__":

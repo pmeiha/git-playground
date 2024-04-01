@@ -25,3 +25,14 @@ input, button, select {
 table, th, td {
     border: 0px solid;
 }
+
+table.edit_outer,
+th.edit_outer,
+td.edit_outer {
+    border: 1px solid;
+}
+
+
+tr.specal {
+    color: burlywood;
+}

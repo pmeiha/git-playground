@@ -8,15 +8,11 @@
 </head>
 <body>
   <h1>{{ title }} edit_line</h1>
-  <p>rc code is : {{ rc_code }}</p>
-  <p>current line {{ line_nr }}</p>  
-  <table>
-    {{ current_line | safe }}
-  </table>  
-  <table border="1">
+  <table class="edit_outer">
+    <tr><th class="edit_outer">Zeile anpassen</th><th class="edit_outer">&Uuml;bersicht</th></tr>
     <tr>
-      <td>
-        <table border="0">
+      <td class="edit_outer">
+        <table class="edit_inner">
           <form action="/store_line" method="get"><input type="hidden" name="line_nr" id="line_nr" value="{{ line_nr }}">
             <tr>
               <td colspan="3">
@@ -74,17 +70,20 @@
           </form>
         </table>
       </td>
-      <td>zweites fenster<br>
-          zweites fenster
+      <td class="edit_outer">
+        <table>
+          {{ side_table | safe }}
+        </table>  
       </td>
     </tr>
   </table>                          
   <form action="/set_timer">
     <select id="dev_ip" name="dev_ip">
-      <option value="10.42.10.19">st03</option>
-      <option value="10.42.10.21">st05</option>
+    {% for dev in device_list %}
+      <option value="{{ dev['ip'] }}">{{ dev['name'] }}</option>
+    {% endfor %}            
     </select>
-    <button type="submit">lese vom Gerät</button>
+    <button type="submit">lese vom Ger&auml;t</button>
   </form>
 </body>
 </html>
