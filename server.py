@@ -213,7 +213,7 @@ def store_file():
     for line in timer_text:
         if line.find('addClockEvent') == 0:
             sline = line.split(" ")
-            sline[4] = str(nr)
+            sline[3] = str(nr)
             line = " ".join(sline)
         file_text += line + "\n"
         nr += 1

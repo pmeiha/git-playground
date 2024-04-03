@@ -45,8 +45,24 @@ def get_timer(dev_ip):
     return timer_data
 
 
+def get_tz(dev_ip):
+    request_url = f'http://{dev_ip}/api/lfs/tz.bat'
+
+    timer_data = requests.get(request_url)
+
+    return timer_data
+
+
 def save_timer(file_text, dev_ip):
     request_url = f'http://{dev_ip}/api/lfs/timer.bat'
+
+    ret_data = requests.post(request_url, file_text)
+
+    return ret_data
+
+
+def save_tz(file_text, dev_ip):
+    request_url = f'http://{dev_ip}/api/lfs/tz.bat'
 
     ret_data = requests.post(request_url, file_text)
 
@@ -57,6 +73,14 @@ def exec_timer(dev_ip):
     request_url = f'http://{dev_ip}/api/cmnd'
 
     ret_data = requests.post(request_url, "exec timer.bat")
+
+    return ret_data
+
+
+def exec_tz(dev_ip):
+    request_url = f'http://{dev_ip}/api/cmnd'
+
+    ret_data = requests.post(request_url, "exec tz.bat")
 
     return ret_data
 
