@@ -19,7 +19,7 @@ body {
 input, button, select {
     font-size: 1rem;
     padding: 0.1rem;
-    border-radius: 10px;
+    border-radius: 3px;
 }
 
 table, th, td {
