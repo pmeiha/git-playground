@@ -126,17 +126,17 @@ def get_table(text_in, without_action=False, spec_nr=0):
         if line.find('addClockEvent') == 0:
             sline = line.split(" ")
             if without_action:
-                hline = f"<tr{spec_tag}><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>"
+                hline = f'<tr{spec_tag}><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>'
             else:
-                hline = f"<tr{spec_tag}><td>{line_form(line_nr)}</td><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>"
+                hline = f'<tr{spec_tag}><td>{line_form(line_nr)}</td><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>'
             line_nr += 1
 
         text_out += hline
 
     if without_action:
-        text_out += f"<tr><td></td><td></td><td></td></tr>"
+        text_out += f'<tr><td></td><td></td><td></td></tr>'
     else:
-        text_out += f"<tr><td>{line_form(line_nr, edit=False, delete=False, itext="Zeile anhängen")}</td><td></td><td></td><td></td></tr>"
+        text_out += f'<tr><td>{line_form(line_nr, edit=False, delete=False, itext="Zeile anhängen")}</td><td></td><td></td><td></td></tr>'
 
     return text_out
 
