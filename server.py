@@ -174,8 +174,7 @@ def store_line():
             int(do) + int(fr) + int(sa) + int(so)
         days = f'0x{day_nr:0>2x}'
     print("days: ", days)
-    timer_text[int(line_nr)] = f'addClockEvent {
-        time} {days} {line_nr} power {power}'
+    timer_text[int(line_nr)] = f'addClockEvent {time} {days} {line_nr} power {power}'
 
     return render_template(
         "timer.html",
