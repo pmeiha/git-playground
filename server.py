@@ -111,7 +111,7 @@ def edit_line():
 
         elif action == "insert":
             timer_text.insert(
-                line_nr, "addClockEvent 00:00:00 0xff 1 power off")
+                line_nr, "addClockEvent 00:00 0xff 1 power off")
             return render_template(
                 "edit_line.html",
                 title=f'{dev_name} ({dev_ip})',
