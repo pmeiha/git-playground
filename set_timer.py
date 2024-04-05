@@ -91,7 +91,7 @@ def line_form(line_nr, edit=True, delete=True, insert=True, etext="edit", dtext=
     t_out = ""
 
     if edit or delete or insert:
-        t_out += f'<form action="{url_for('edit_line')}" method="get"><input type="hidden" id="line_nr" name="line_nr" value="{escape(line_nr)}">'
+        t_out += f'<form action="{url_for("edit_line")}" method="get"><input type="hidden" id="line_nr" name="line_nr" value="{escape(line_nr)}">'
 
         if edit:
             t_out += f'<button type="submit" id="edit" name="action" value="edit">{escape(etext)}</button>'
