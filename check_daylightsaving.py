@@ -27,5 +27,4 @@ for dev in device_list:
 
     if changed:
         save_data = save_tz(file_text, dev['ip'])
-        print(f'{time.strftime('%Y.%m.%d %H:%M:%S')} save file: content: <{
-              file_text}> on {dev['name']} ({dev['ip']}) status_code {save_data.status_code}')
+        print(f'{time.strftime("%Y.%m.%d %H:%M:%S")} save file: content: <{file_text}> on {dev["name"]} ({dev["ip"]}) status_code {save_data.status_code}')
