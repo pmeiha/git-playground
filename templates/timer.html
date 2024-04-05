@@ -11,17 +11,17 @@
     <p>rc code is : {{ rc_code }}</p>
     {% if not rc_code == 200 %}
       <p>timer.bat not exists we will create a new one</p>
-      <form action="/create_new"><button type="submit">neues File erstellen</button></form>
+      <form action="{{ url_for('create_new') }}"><button type="submit">neues File erstellen</button></form>
     {% else %}  
       <p>  
       <table>
         {{ current_timer | safe }}
       </table></p>
     {% endif %}<br>
-    <form action="/store_file">
+    <form action="{{ url_for('store_file') }}">
         <button type="submit">auf das Gerät speichern</button>
     </form><br>
-    <form action="/set_timer">
+    <form action="{{ url_for('set_timer') }}">
       <select id="dev_ip" name="dev_ip">
       {% for dev in device_list %}
         <option value="{{ dev['ip'] }}">{{ dev['name'] }}</option>

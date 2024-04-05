@@ -1,3 +1,4 @@
+from flask import url_for
 from dotenv import load_dotenv
 from pprint import pprint
 from markupsafe import escape
@@ -90,20 +91,16 @@ def line_form(line_nr, edit=True, delete=True, insert=True, etext="edit", dtext=
     t_out = ""
 
     if edit or delete or insert:
-        t_out += f'<form action="/edit_line" method="get"><input type="hidden" id="line_nr" name="line_nr" value="{
-            escape(line_nr)}">'
+        t_out += f'<form action="{url_for('edit_line')}" method="get"><input type="hidden" id="line_nr" name="line_nr" value="{escape(line_nr)}">'
 
         if edit:
-            t_out += f'<button type="submit" id="edit" name="action" value="edit">{
-                escape(etext)}</button>'
+            t_out += f'<button type="submit" id="edit" name="action" value="edit">{escape(etext)}</button>'
 
         if delete:
-            t_out += f'<button type="submit" id="delete" name="action" value="delete">{
-                escape(dtext)}</button>'
+            t_out += f'<button type="submit" id="delete" name="action" value="delete">{escape(dtext)}</button>'
 
         if insert:
-            t_out += f'<button type="submit" id="insert" name="action" value="insert">{
-                escape(itext)}</button>'
+            t_out += f'<button type="submit" id="insert" name="action" value="insert">{escape(itext)}</button>'
 
         t_out += '</form>'
     return t_out
@@ -129,11 +126,9 @@ def get_table(text_in, without_action=False, spec_nr=0):
         if line.find('addClockEvent') == 0:
             sline = line.split(" ")
             if without_action:
-                hline = f"<tr{spec_tag}><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(
-                    get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>"
+                hline = f"<tr{spec_tag}><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>"
             else:
-                hline = f"<tr{spec_tag}><td>{
-                    line_form(line_nr)}</td><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>"
+                hline = f"<tr{spec_tag}><td>{line_form(line_nr)}</td><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>"
             line_nr += 1
 
         text_out += hline
@@ -141,8 +136,7 @@ def get_table(text_in, without_action=False, spec_nr=0):
     if without_action:
         text_out += f"<tr><td></td><td></td><td></td></tr>"
     else:
-        text_out += f"<tr><td>{line_form(line_nr, edit=False, delete=False, itext="Zeile anhängen")
-                               }</td><td></td><td></td><td></td></tr>"
+        text_out += f"<tr><td>{line_form(line_nr, edit=False, delete=False, itext="Zeile anhängen")}</td><td></td><td></td><td></td></tr>"
 
     return text_out
 
