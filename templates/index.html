@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Schaltuhren einstellen</h1>
-    <form action="{{ url_for('set_timer') }}">
+    <form action="{{ url_for('edit_timer') }}">
         <select id="dev_ip" name="dev_ip">
             {% for dev in device_list %}
               <option value="{{ dev['ip'] }}">{{ dev['name'] }}</option>

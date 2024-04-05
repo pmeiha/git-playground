@@ -20,7 +20,7 @@ def index():
                            )
 
 
-@app.route('/set_timer')
+@app.route('/edit_timer')
 def edit_timer():
     global dev_ip
     global dev_name
