@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request
 from set_timer import scan_device, get_timer, save_timer, exec_timer, get_table, get_line, get_days, search_config
 from waitress import serve
-import argparse
 import os
 import sys
 
@@ -11,12 +10,8 @@ dev_name = ""
 timer_text = []
 device_list = []
 
-parser = argparse.ArgumentParser(description='Check/Set autoexec.bat and tz.bat to openBeken devices')
-parser.add_argument('-c','--config',help='config file name',default='check_openbeken.conf')
-args = parser.parse_args()
-
 # check if file readable
-config_file = args.config
+config_file = 'check_openbeken.conf'
 
 config_file_content = []
 if not os.access(config_file, os.R_OK):
