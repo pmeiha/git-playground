@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request
-from set_timer import scan_device, get_timer, save_timer, exec_timer, get_table, get_line, get_days
+from set_timer import scan_device, get_timer, save_timer, exec_timer, get_table, get_line, get_days, search_config
 from waitress import serve
+import argparse
+import os
+import sys
 
 app = Flask(__name__)
 dev_ip = ""
@@ -8,12 +11,38 @@ dev_name = ""
 timer_text = []
 device_list = []
 
+parser = argparse.ArgumentParser(description='Check/Set autoexec.bat and tz.bat to openBeken devices')
+parser.add_argument('-c','--config',help='config file name',default='check_openbeken.conf')
+args = parser.parse_args()
+
+# check if file readable
+config_file = args.config
+
+config_file_content = []
+if not os.access(config_file, os.R_OK):
+    print(sys.argv[0],":",config_file,"is not readable")
+    
+else:
+    # read config file
+    c = open(config_file,"r")
+    for line in c:
+        comment = line.find("#")
+        if comment > 0:
+            config_file_content.append(line[0:comment].strip())
+        elif comment == -1 and len(line.split(':')) >= 3:    
+            config_file_content.append(line.strip())
+
 
 @app.route('/')
 @app.route('/index')
 def index():
     global device_list
-    device_list = scan_device("10.42.10", 10, 30)
+
+    scan_list = search_config(config_file_content, 'server', 'scan' ).split()
+    if len(scan_list) < 3:
+        scan_list=['1.2.3', '10', '30']
+
+    device_list = scan_device(scan_list[0], int(scan_list[1]), int(scan_list[2]))
     return render_template('index.html',
                            result="",
                            device_list=device_list

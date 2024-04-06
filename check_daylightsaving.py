@@ -1,20 +1,8 @@
-from set_timer import scan_device, get_tz, save_tz, exec_tz, get_autoexec, save_autoexec, exec_autoexec
+from set_timer import scan_device, get_tz, save_tz, exec_tz, get_autoexec, save_autoexec, exec_autoexec, search_config
 import time
 import os
 import sys
 import argparse
-
-def search_config(config=[], tag="", dev=""):
-    f = ""
-    for c in config:
-        e = c.split(':')
-        #print(e[0].lower().strip(), tag.lower(), e[1].lower().strip(), dev.lower())
-        if e[0].lower().strip() == tag.lower() and e[1].lower().strip() == dev.lower():
-            return e[2].strip()
-        elif e[0].lower().strip() == tag.lower() and e[1].lower().strip() == "all":
-            #print('all',e[2])
-            f = e[2].strip()
-    return f         
 
 ###################################################################################
 # add a config tag to the device list
@@ -34,7 +22,6 @@ def add_config(device_list=[], config_list=[], tag=""):
 def get_file(filename):
 
     content = ''
-    print('get_file',filename)
     if not os.access(filename, os.R_OK):
         print(sys.argv[0],":",filename,"is not readable")
     
@@ -51,10 +38,13 @@ def check_file(filename,content=""):
 
     return get_file(filename) == content
 
+###################################################################################
+# main
+###################################################################################
+
 parser = argparse.ArgumentParser(description='Check/Set autoexec.bat and tz.bat to openBeken devices')
 parser.add_argument('-c','--config',help='config file name',default='check_openbeken.conf')
 args = parser.parse_args()
-
 
 # check if file readable
 config_file = args.config
@@ -64,6 +54,7 @@ if not os.access(config_file, os.R_OK):
     print(sys.argv[0],":",config_file,"is not readable")
     
 else:
+    # read config file
     c = open(config_file,"r")
     for line in c:
         comment = line.find("#")
@@ -72,22 +63,15 @@ else:
         elif comment == -1 and len(line.split(':')) >= 3:    
             config_file_content.append(line.strip())
 
-print(config_file_content)
-
-print('st03', search_config(config_file_content, "autoexec", "ST03" ))
-print('st04', search_config(config_file_content, "autoexec", "ST04" ))
-print('st05', search_config(config_file_content, "autoexec", "ST05" ))
-
-
-# autoexec autoexec.bat devicename
-# autoexec autoexec_all all
-# autoexec autoexec_ST03 ST03
-
-
+# get actual tz value
 actual_tz = time.strftime("%z")
 actual_tz = f'{actual_tz[0:3]}:{actual_tz[3:]}'
 
-device_list = scan_device("10.42.10", 10, 30)
+# scan for devices 
+scan_list = search_config(config_file_content, 'server', 'scan' ).split()
+if len(scan_list) < 3:
+    scan_list=['10.42.10', '10', '30']
+device_list = scan_device(scan_list[0], int(scan_list[1]), int(scan_list[2]))
 # device_list = [{'ip': '10.42.10.19', 'name': 'st03'}]
 
 device_list = add_config(device_list, config_file_content, 'autoexec')

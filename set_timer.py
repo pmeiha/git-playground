@@ -6,6 +6,22 @@ import requests
 import dns.resolver
 import os
 
+###################################################################################
+# search config according "tag" and "dev" 
+# if no dev specific availabel it will return the "all" value
+def search_config(config=[], tag="", dev=""):
+    f = ""
+    for c in config:
+        e = c.split(':')
+        #print(e[0].lower().strip(), tag.lower(), e[1].lower().strip(), dev.lower())
+        if e[0].lower().strip() == tag.lower() and e[1].lower().strip() == dev.lower():
+            return e[2].strip()
+        elif e[0].lower().strip() == tag.lower() and e[1].lower().strip() == "all":
+            #print('all',e[2])
+            f = e[2].strip()
+    return f         
+
+
 
 def scan_device(ip_prefix, start, end):
 
