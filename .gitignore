@@ -1,3 +1,6 @@
 .venv
 .env
 __pycache__
+check_openbeken.conf
+openbeken_autoexec
+openbeken_st03_autoexec

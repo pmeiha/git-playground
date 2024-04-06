@@ -54,6 +54,10 @@ def get_tz(dev_ip):
     return timer_data
 
 
+def get_autoexec(dev_ip):
+    return requests.get(f'http://{dev_ip}/api/lfs/autoexec.bat')
+
+
 def save_timer(file_text, dev_ip):
     request_url = f'http://{dev_ip}/api/lfs/timer.bat'
 
@@ -68,6 +72,9 @@ def save_tz(file_text, dev_ip):
     ret_data = requests.post(request_url, file_text)
 
     return ret_data
+
+def save_autoexec(file_text, dev_ip):
+    return requests.post(f'http://{dev_ip}/api/lfs/autoexec.bat', file_text)
 
 
 def exec_timer(dev_ip):
@@ -84,6 +91,9 @@ def exec_tz(dev_ip):
     ret_data = requests.post(request_url, "exec tz.bat")
 
     return ret_data
+
+def exec_autoexec(dev_ip):
+    return requests.post(f'http://{dev_ip}/api/cmnd', "exec autoexec.bat")
 
 
 def line_form(line_nr, edit=True, delete=True, insert=True, etext="edit", dtext="delete", itext="oben einfügen"):
