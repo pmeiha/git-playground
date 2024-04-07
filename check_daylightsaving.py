@@ -1,4 +1,4 @@
-from set_timer import scan_device, get_tz, save_tz, exec_tz, get_autoexec, save_autoexec, exec_autoexec, search_config
+from set_timer import scan_device, get_tz, save_tz, exec_tz, get_autoexec, save_autoexec, exec_autoexec, search_config, get_timer, save_timer, exec_timer
 import time
 import os
 import sys
@@ -77,6 +77,8 @@ device_list = scan_device(scan_list[0], int(scan_list[1]), int(scan_list[2]))
 device_list = add_config(device_list, config_file_content, 'autoexec')
 
 for dev in device_list:
+
+    # check tz
     changed = False
     tz_data = get_tz(dev['ip'])
     if tz_data.status_code == 200:
@@ -98,6 +100,7 @@ for dev in device_list:
         exec_data = exec_tz(dev['ip'])
         print(f'{time.strftime("%Y.%m.%d %H:%M:%S")} save file: content: <{file_text}> on {dev["name"]} ({dev["ip"]}) status_code {save_data.status_code} {exec_data.status_code}')
 
+    # check autoexec.bat
     changed = False
     auto_data = get_autoexec(dev['ip'])
     if auto_data.status_code == 200:
@@ -116,4 +119,31 @@ for dev in device_list:
         save_data = save_autoexec(file_text, dev['ip'])
         exec_data = exec_autoexec(dev['ip'])
         print(f'{time.strftime("%Y.%m.%d %H:%M:%S")} save file: content: {dev["autoexec"]} on {dev["name"]} ({dev["ip"]}) status_code {save_data.status_code} {exec_data.status_code}')
+    
+    # check timer.bat
+    changed = False
+    timer_data = get_timer(dev['ip'], filename='')
+    filename = search_config(config_file_content, 'server', 'save').format(device = dev['ip'])
+
+    # if a timer.bat on device
+    if timer_data['status_code'] == 200:
+
+        # if timerbat on device different from stored file
+        if not check_file(filename, timer_data['text']):
+
+            file_text = get_file(filename)
+            print('file_text',file_text)
+            # if stored file not empty
+            if len(file_text) > 1:
+                changed = True
+
+    else:
+        # set new timer.bat
+        file_text = get_file(filename)
+        changed = True
+
+    if changed:
+        save_data = save_timer(file_text, dev["ip"], filename)
+        exec_data = exec_timer(dev['ip'])
+        print(f'{time.strftime("%Y.%m.%d %H:%M:%S")} save file: content: {filename} on {dev["name"]} ({dev["ip"]}) status_code {save_data.status_code} {exec_data.status_code}')
 

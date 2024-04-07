@@ -58,17 +58,19 @@ def scan_device(ip_prefix, start, end):
 def get_timer(dev_ip, filename=""):
 
     request_url = f'http://{dev_ip}/api/lfs/timer.bat'
+    timer_ret = {'status_code': 0, 'text': ''}
 
     timer_data = requests.get(request_url)
-
-    timer_ret = {'status_code': 0, 'text': ''}
 
     if timer_data.status_code != 200:
 
         if filename == "":
-            filename = "save/{device}_timer.bat"
+            #filename = "save/{device}_timer.bat"
+            return timer_ret
+
         filename = filename.format(device = dev_ip)
         print('get filename',filename)
+
         if not os.access(filename, os.R_OK):
             print(sys.argv[0],":",filename,"is not readable")
         else:    
