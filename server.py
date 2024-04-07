@@ -55,12 +55,12 @@ def edit_timer():
     for dev in device_list:
         if dev['ip'] == dev_ip:
             dev_name = dev['name']
-    timer_data = get_timer(dev_ip)
-    timer_text = timer_data.text.splitlines()
+    timer_data = get_timer(dev_ip,search_config(config_file_content, 'server', 'save' ))
+    timer_text = timer_data['text'].splitlines()
     return render_template(
         "timer.html",
         title=f'{dev_name} ({dev_ip})',
-        rc_code=timer_data.status_code,
+        rc_code=timer_data['status_code'],
         current_timer=get_table(timer_text),
         device_list=device_list
     )
@@ -240,7 +240,7 @@ def store_file():
             line = " ".join(sline)
         file_text += line + "\n"
         nr += 1
-    save_data = save_timer(file_text, dev_ip)
+    save_data = save_timer(file_text, dev_ip, search_config(config_file_content, 'server', 'save' ))
 
     if save_data.status_code == 200:
         print("save OK ", save_data.status_code)

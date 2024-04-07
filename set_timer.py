@@ -5,6 +5,7 @@ from markupsafe import escape
 import requests
 import dns.resolver
 import os
+import sys
 
 ###################################################################################
 # search config according "tag" and "dev" 
@@ -54,12 +55,32 @@ def scan_device(ip_prefix, start, end):
     return device_list
 
 
-def get_timer(dev_ip):
+def get_timer(dev_ip, filename=""):
+
     request_url = f'http://{dev_ip}/api/lfs/timer.bat'
 
     timer_data = requests.get(request_url)
 
-    return timer_data
+    timer_ret = {'status_code': 0, 'text': ''}
+
+    if timer_data.status_code != 200:
+
+        if filename == "":
+            filename = "save/{device}_timer.bat"
+        filename = filename.format(device = dev_ip)
+        print('get filename',filename)
+        if not os.access(filename, os.R_OK):
+            print(sys.argv[0],":",filename,"is not readable")
+        else:    
+            f = open(filename,'r')
+            timer_ret['text'] = f.read()
+            f.close()
+            timer_ret['status_code'] = 200
+    else:
+        timer_ret['status_code'] = timer_data.status_code
+        timer_ret['text'] = timer_data.text
+
+    return timer_ret
 
 
 def get_tz(dev_ip):
@@ -74,10 +95,20 @@ def get_autoexec(dev_ip):
     return requests.get(f'http://{dev_ip}/api/lfs/autoexec.bat')
 
 
-def save_timer(file_text, dev_ip):
+def save_timer(file_text, dev_ip, filename=""):
+
+    if filename == "":
+        filename = "save/{device}_timer.bat"
+    filename = filename.format(device = dev_ip)
+    print('filename',filename)
+    f = open(filename,'w')
+    f.write(file_text)
+    f.close()
+
     request_url = f'http://{dev_ip}/api/lfs/timer.bat'
 
     ret_data = requests.post(request_url, file_text)
+
 
     return ret_data
 
