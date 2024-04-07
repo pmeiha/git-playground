@@ -102,7 +102,6 @@ def save_timer(file_text, dev_ip, filename=""):
     if filename == "":
         filename = "save/{device}_timer.bat"
     filename = filename.format(device = dev_ip)
-    print('filename',filename)
     f = open(filename,'w')
     f.write(file_text)
     f.close()
