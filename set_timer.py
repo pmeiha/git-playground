@@ -97,19 +97,22 @@ def get_autoexec(dev_ip):
     return requests.get(f'http://{dev_ip}/api/lfs/autoexec.bat')
 
 
-def save_timer(file_text, dev_ip, filename=""):
+def save_timer(file_text, dev_ip, filename="",local=True):
 
-    if filename == "":
-        filename = "save/{device}_timer.bat"
-    filename = filename.format(device = dev_ip)
-    f = open(filename,'w')
-    f.write(file_text)
-    f.close()
+    if local:
+      if filename == "":
+          filename = "save/{device}_timer.bat"
+      filename = filename.format(device = dev_ip)
+      f = open(filename,'w')
+      f.write(file_text)
+      f.close()
 
-    request_url = f'http://{dev_ip}/api/lfs/timer.bat'
+    if len(file_text) > 1:
+      request_url = f'http://{dev_ip}/api/lfs/timer.bat'
+      ret_data = requests.post(request_url, file_text)
 
-    ret_data = requests.post(request_url, file_text)
-
+    else:
+      ret_data = requests.get(request_url)    
 
     return ret_data
 

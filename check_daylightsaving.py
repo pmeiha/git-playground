@@ -122,6 +122,7 @@ for dev in device_list:
     
     # check timer.bat
     changed = False
+    local = True
     timer_data = get_timer(dev['ip'], filename='')
     filename = search_config(config_file_content, 'server', 'save').format(device = dev['ip'])
 
@@ -141,9 +142,10 @@ for dev in device_list:
         # set new timer.bat
         file_text = get_file(filename)
         changed = True
+        local = false
 
     if changed:
-        save_data = save_timer(file_text, dev["ip"], filename)
+        save_data = save_timer(file_text, dev["ip"], filename, local)
         exec_data = exec_timer(dev['ip'])
         print(f'{time.strftime("%Y.%m.%d %H:%M:%S")} save file: content: {filename} on {dev["name"]} ({dev["ip"]}) status_code {save_data.status_code} {exec_data.status_code}')
 
