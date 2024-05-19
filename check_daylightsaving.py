@@ -142,7 +142,8 @@ for dev in device_list:
         # set new timer.bat
         file_text = get_file(filename)
         changed = True
-        local = false
+        # do not save local
+        local = False
 
     if changed:
         save_data = save_timer(file_text, dev["ip"], filename, local)
