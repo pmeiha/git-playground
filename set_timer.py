@@ -107,8 +107,9 @@ def save_timer(file_text, dev_ip, filename="",local=True):
       f.write(file_text)
       f.close()
 
+    request_url = f'http://{dev_ip}/api/lfs/timer.bat'
+    
     if len(file_text) > 1:
-      request_url = f'http://{dev_ip}/api/lfs/timer.bat'
       ret_data = requests.post(request_url, file_text)
 
     else:
