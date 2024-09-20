@@ -8,14 +8,6 @@
 </head>
 <body>
     <h1>Schaltuhren einstellen</h1>
-    <form action="{{ url_for('edit_timer') }}">
-        <select id="dev_ip" name="dev_ip">
-            {% for dev in device_list %}
-              <option value="{{ dev['ip'] }}">{{ dev['name'] }}</option>
-            {% endfor %}            
-        </select>
-        <button type="submit">lese vom Ger&auml;t</button>
-    </form>
-    <p>{{ result }}</p>
+    <p>suche die Schaltuhren</p>
 </body>
 </html>

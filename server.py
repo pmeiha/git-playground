@@ -33,12 +33,14 @@ else:
 def index():
     global device_list
 
+    x = render_template('index.html')
+
     scan_list = search_config(config_file_content, 'server', 'scan' ).split()
     if len(scan_list) < 3:
         scan_list=['1.2.3', '10', '30']
 
     device_list = scan_device(scan_list[0], int(scan_list[1]), int(scan_list[2]))
-    return render_template('index.html',
+    return render_template('index1.html',
                            result="",
                            device_list=device_list
                            )
