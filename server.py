@@ -47,7 +47,7 @@ def get_timer():
     return render_template('get_timer.html',
                            result="",
                            device_list=device_list
-                           )
+    )
 
 
 @app.route('/edit_timer')
