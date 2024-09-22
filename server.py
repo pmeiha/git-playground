@@ -34,6 +34,7 @@ def index():
 
     return render_template('index.html')
 
+
 @app.route('/get_timer')
 def get_timer():
     global device_list
@@ -43,7 +44,7 @@ def get_timer():
         scan_list=['1.2.3', '10', '30']
 
     device_list = scan_device(scan_list[0], int(scan_list[1]), int(scan_list[2]))
-    return render_template('index1.html',
+    return render_template('get_timer.html',
                            result="",
                            device_list=device_list
                            )
