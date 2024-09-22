@@ -31,6 +31,7 @@ else:
 @app.route('/')
 @app.route('/index')
 def index():
+    global device_list
 
     return render_template('index.html')
 
