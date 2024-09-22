@@ -31,9 +31,12 @@ else:
 @app.route('/')
 @app.route('/index')
 def index():
-    global device_list
 
-    x = render_template('index.html')
+    return render_template('index.html')
+
+@app.route('/index1')
+def index1():
+    global device_list
 
     scan_list = search_config(config_file_content, 'server', 'scan' ).split()
     if len(scan_list) < 3:
