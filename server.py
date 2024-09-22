@@ -254,7 +254,7 @@ def store_file():
     else:
         print("Not 200 ", save_data.status_code)
 
-    return render_template('index.html',
+    return render_template('get_dev.html',
                            result=f'Resultat des Speicherns {dev_name} ({dev_ip}) = speichern: {save_data.status_code}, ausführen: {exec_data.status_code}',
                            device_list=device_list
                            )
