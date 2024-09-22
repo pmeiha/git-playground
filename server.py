@@ -27,15 +27,17 @@ else:
         elif comment == -1 and len(line.split(':')) >= 3:    
             config_file_content.append(line.strip())
 
-
+'''
 @app.route('/')
 @app.route('/index')
 def index():
     global device_list
 
     return render_template('index.html')
+'''
 
-
+@app.route('/')
+@app.route('/index')
 @app.route('/get_timer')
 def get_timer():
     global device_list
