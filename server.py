@@ -27,19 +27,15 @@ else:
         elif comment == -1 and len(line.split(':')) >= 3:    
             config_file_content.append(line.strip())
 
-'''
 @app.route('/')
 @app.route('/index')
 def index():
     global device_list
 
     return render_template('index.html')
-'''
 
-@app.route('/')
-@app.route('/index')
 @app.route('/get_dev')
-def get_timer():
+def get_dev():
     global device_list
 
     scan_list = search_config(config_file_content, 'server', 'scan' ).split()
