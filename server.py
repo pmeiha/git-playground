@@ -34,8 +34,8 @@ def index():
 
     return render_template('index.html')
 
-@app.route('/index1')
-def index1():
+@app.route('/get_timer')
+def get_timer():
     global device_list
 
     scan_list = search_config(config_file_content, 'server', 'scan' ).split()
