@@ -7,7 +7,7 @@
     <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" />
 </head>
 <body>
-    <h1>Schaltuhren einstellllen</h1>
+    <h1>Schaltuhren einstellen</h1>
     <form action="{{ url_for('edit_timer') }}">
         <select id="dev_ip" name="dev_ip">
             {% for dev in device_list %}
