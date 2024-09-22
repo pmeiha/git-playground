@@ -32,7 +32,10 @@ else:
 def index():
     global device_list
 
-    return render_template('index.html')
+    return render_template('index.html',
+                           result="",
+                           timeout=0
+    )
 
 @app.route('/get_dev')
 def get_dev():
@@ -254,10 +257,10 @@ def store_file():
     else:
         print("Not 200 ", save_data.status_code)
 
-    return render_template('get_dev.html',
+    return render_template('index.html',
                            result=f'Resultat des Speicherns {dev_name} ({dev_ip}) = speichern: {save_data.status_code}, ausführen: {exec_data.status_code}',
-                           device_list=device_list
-                           )
+                           timeout=5
+    )
 
 
 if __name__ == "__main__":
