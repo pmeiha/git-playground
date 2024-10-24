@@ -1,5 +1,6 @@
 .venv
 .env
+save
 __pycache__
 check_openbeken.conf
 openbeken_autoexec
