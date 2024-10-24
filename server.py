@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from set_timer import scan_device, get_timer, save_timer, exec_timer, get_table, get_line, get_days, search_config
+from set_timer import scan_device, set_state, get_state, get_timer, save_timer, exec_timer, get_table, get_line, get_days, search_config
 from waitress import serve
 import os
 import sys
@@ -53,23 +53,31 @@ def get_dev():
 
 
 @app.route('/edit_timer')
-def edit_timer():
+def edit_timer(arg_ip = ""):
     global dev_ip
     global dev_name
     global timer_text
     global device_list
 
-    dev_ip = request.args.get('dev_ip')
+    if arg_ip == "":
+        dev_ip = request.args.get('dev_ip')
+    else:
+        dev_ip = arg_ip    
     for dev in device_list:
         if dev['ip'] == dev_ip:
             dev_name = dev['name']
     timer_data = get_timer(dev_ip,search_config(config_file_content, 'server', 'save' ))
     timer_text = timer_data['text'].splitlines()
+    power_state = get_state(dev_ip)
+    print(power_state)
+
     return render_template(
         "timer.html",
         title=f'{dev_name} ({dev_ip})',
         rc_code=timer_data['status_code'],
         current_timer=get_table(timer_text),
+        current_state=f'toggle ({power_state})',
+        dev_ip=dev_ip,
         device_list=device_list
     )
 
@@ -261,6 +269,14 @@ def store_file():
                            result=f'Resultat des Speicherns {dev_name} ({dev_ip}) = speichern: {save_data.status_code}, ausführen: {exec_data.status_code}',
                            timeout=5
     )
+
+@app.route('/toggle_power')
+def toggle_power():
+    
+    #print('hallo',dev_ip)
+    set_state(dev_ip)
+    return edit_timer(dev_ip)
+
 
 
 if __name__ == "__main__":

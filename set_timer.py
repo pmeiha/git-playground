@@ -54,6 +54,30 @@ def scan_device(ip_prefix, start, end):
         device_list.append({'ip': ip, 'name': str(res[0]).split(".")[0]})
     return device_list
 
+def set_state(dev_ip):
+
+    request_url = f'http://{dev_ip}/api/cmnd'
+
+    ret_data = requests.post(request_url, "power toggle")
+
+    ret_data1 = get_state(dev_ip)
+
+    print(ret_data1)
+    return
+
+def get_state(dev_ip):
+
+    request_url = f'http://{dev_ip}/cm'
+
+    ret_data = requests.post(request_url, data = {'cmnd' : 'power' })
+
+    if ret_data.status_code != 200:
+        retVal = "NOK"
+    else:
+        retVal = ret_data.json()['POWER']    
+
+    return retVal
+
 
 def get_timer(dev_ip, filename=""):
 
