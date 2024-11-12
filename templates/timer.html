@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="5; URL={{ url_for('edit_timer') }}?dev_ip={{ dev_ip }}">
+    <meta http-equiv="refresh" content="10; URL={{ url_for('edit_timer') }}?dev_ip={{ dev_ip }}">
     <title>{{ title }} timer</title>
     <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" />
 </head>
@@ -20,7 +20,7 @@
       </table></p>
     {% endif %}<br>
     <form action="{{ url_for('store_file') }}">
-        <button type="submit">auf das Gerät speichern</button>
+        <button type="submit">{{ startedit }}auf das Gerät speichern</button>
     </form><br>
     <form action="{{ url_for('toggle_power') }}">
       <imput type="hidden" name="dev_ip" value="{{ dev_ip }}"></imput>

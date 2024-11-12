@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from set_timer import scan_device, set_state, get_state, get_timer, save_timer, exec_timer, get_table, get_line, get_days, search_config
 from waitress import serve
+from markupsafe import escape
 import os
 import sys
 
@@ -9,6 +10,7 @@ dev_ip = ""
 dev_name = ""
 timer_text = []
 device_list = []
+startedit = False
 
 # check if file readable
 config_file = 'check_openbeken.conf'
@@ -40,6 +42,9 @@ def index():
 @app.route('/get_dev')
 def get_dev():
     global device_list
+    global startedit
+
+    startedit = False
 
     scan_list = search_config(config_file_content, 'server', 'scan' ).split()
     if len(scan_list) < 3:
@@ -58,6 +63,7 @@ def edit_timer(arg_ip = ""):
     global dev_name
     global timer_text
     global device_list
+    global startedit
 
     if arg_ip == "":
         dev_ip = request.args.get('dev_ip')
@@ -66,19 +72,26 @@ def edit_timer(arg_ip = ""):
     for dev in device_list:
         if dev['ip'] == dev_ip:
             dev_name = dev['name']
-    timer_data = get_timer(dev_ip,search_config(config_file_content, 'server', 'save' ))
-    timer_text = timer_data['text'].splitlines()
+    rc_code = 200        
+    if not startedit:        
+        timer_data = get_timer(dev_ip,search_config(config_file_content, 'server', 'save' ))
+        timer_text = timer_data['text'].splitlines()
+        rc_code = timer_data['status_code']
+        modified = ""
+    else:
+        modified = "(edited) "    
     power_state = get_state(dev_ip)
     print(power_state)
 
     return render_template(
         "timer.html",
         title=f'{dev_name} ({dev_ip})',
-        rc_code=timer_data['status_code'],
+        rc_code=rc_code,
         current_timer=get_table(timer_text),
         current_state=f'toggle ({power_state})',
         dev_ip=dev_ip,
-        device_list=device_list
+        device_list=device_list,
+        startedit = escape(modified)
     )
 
 
@@ -87,6 +100,7 @@ def edit_line():
     global dev_ip
     global dev_name
     global timer_text
+
     line_nr = int(request.args.get('line_nr'))
     action = request.args.get('action')
     print("request.args: ", request.args)
@@ -97,6 +111,9 @@ def edit_line():
         # line_nr in valid range
         sline = timer_text[line_nr].split(" ")
         print("sline: ", sline)
+        disabled = sline[0][0] == "#"
+        print('Disabled: ',disabled)
+            
         if action == "edit":
             print("time: ", sline[1])
             print("day: ", sline[2])
@@ -119,6 +136,12 @@ def edit_line():
             if sline[5] == "on":
                 pon = "checked"
                 poff = ""
+            if disabled:
+                don = "checked"
+                doff = ""
+            else:
+                don = ""
+                doff = "checked"        
             return render_template(
                 "edit_line.html",
                 title=f'{dev_name} ({dev_ip})',
@@ -134,19 +157,26 @@ def edit_line():
                 sa=daily[1],
                 on=pon,
                 off=poff,
+                don = don,
+                doff = doff,
                 device_list=device_list,
                 side_table=get_table(
                     timer_text, without_action=True, spec_nr=line_nr)
             )
         elif action == "delete":
+            startedit = True
             timer_text.pop(line_nr)
             print("del timer_text :", timer_text)
+            power_state = get_state(dev_ip)
             return render_template(
                 "timer.html",
                 title=f'{dev_name} ({dev_ip})',
                 rc_code=200,
                 current_timer=get_table(timer_text),
-                device_list=device_list
+                current_state=f'toggle ({power_state})',
+                dev_ip=dev_ip,
+                device_list=device_list,
+                startedit = escape("(edited) ")
             )
 
         elif action == "insert":
@@ -168,18 +198,26 @@ def edit_line():
                 so="",
                 on="",
                 off="checked",
+                don="",
+                doff="checked",
                 device_list=device_list,
                 side_table=get_table(
                     timer_text, without_action=True, spec_nr=line_nr)
             )
         else:
             print("unknown action", action)
+            if startedit:
+                modified = "(edited) "
+            power_state = get_state(dev_ip)
             return render_template(
                 "timer.html",
                 title=f'{dev_name} ({dev_ip})',
                 rc_code=timer_data.status_code,
                 current_line=get_table(timer_text),
-                device_list=device_list
+                current_state=f'toggle ({power_state})',
+                dev_ip=dev_ip,
+                device_list=device_list,
+                startedit = escape(modified)
             )
     else:
         # add new line
@@ -191,6 +229,7 @@ def store_line():
     global dev_ip
     global dev_name
     global timer_text
+    global startedit 
 
     print("request.args: ", request.args)
 
@@ -205,6 +244,7 @@ def store_line():
     sa = request.args.get('sa', "0")
     so = request.args.get('so', "0")
     power = request.args.get('power', "off")
+    disable = request.args.get('disable')
 
     print(type(mo))
     if daily == "on":
@@ -214,14 +254,20 @@ def store_line():
             int(do) + int(fr) + int(sa) + int(so)
         days = f'0x{day_nr:0>2x}'
     print("days: ", days)
-    timer_text[int(line_nr)] = f'addClockEvent {time} {days} {line_nr} power {power}'
+    timer_text[int(line_nr)] = f'{disable}addClockEvent {time} {days} {line_nr} power {power}'
+
+    startedit = True
+    power_state = get_state(dev_ip)
 
     return render_template(
         "timer.html",
         title=f'{dev_name} ({dev_ip})',
         rc_code=200,
         current_timer=get_table(timer_text),
-        device_list=device_list
+        current_state=f'toggle ({power_state})',
+        dev_ip=dev_ip,
+        device_list=device_list,
+        startedit = escape("(edited) ")
     )
 
 
@@ -230,6 +276,10 @@ def create_new():
     global dev_ip
     global dev_name
     global timer_text
+    global startedit
+
+    startedit = True
+    power_state = get_state(dev_ip)
 
     timer_text = ["clearClockEvents", "listClockEvents"]
     return render_template(
@@ -237,7 +287,10 @@ def create_new():
         title=f'{dev_name} ({dev_ip})',
         rc_code=200,
         current_timer=get_table(timer_text),
-        device_list=device_list
+        current_state=f'toggle ({power_state})',
+        dev_ip=dev_ip,
+        device_list=device_list,
+        startedit = escape("(edited) ")
     )
 
 
@@ -246,11 +299,14 @@ def store_file():
     global dev_ip
     global dev_name
     global timer_text
+    global startedit
+
+    startedit = False
 
     file_text = ""
     nr = 0
     for line in timer_text:
-        if line.find('addClockEvent') == 0:
+        if line.find('addClockEvent') >= 0:
             sline = line.split(" ")
             sline[3] = str(nr)
             line = " ".join(sline)

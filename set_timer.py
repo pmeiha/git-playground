@@ -211,12 +211,16 @@ def get_table(text_in, without_action=False, spec_nr=0):
         if line_nr == spec_nr:
             spec_tag = ' class="specal" '
 
-        if line.find('addClockEvent') == 0:
+        if line.find('addClockEvent') >= 0:
             sline = line.split(" ")
-            if without_action:
-                hline = f'<tr{spec_tag}><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>'
+            if  sline[0][0] == "#":
+                disable= "X"
             else:
-                hline = f'<tr{spec_tag}><td>{line_form(line_nr)}</td><td>&nbsp;{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>'
+                disable = ""    
+            if without_action:
+                hline = f'<tr{spec_tag}><td>&nbsp;{disable}</td><td>{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>'
+            else:
+                hline = f'<tr{spec_tag}><td>{line_form(line_nr)}</td><td>&nbsp;{disable}</td><td>{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>'
             line_nr += 1
 
         text_out += hline

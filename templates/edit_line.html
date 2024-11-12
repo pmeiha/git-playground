@@ -15,18 +15,18 @@
         <table class="edit_inner">
           <form action="{{ url_for('store_line') }}" method="get"><input type="hidden" name="line_nr" id="line_nr" value="{{ line_nr }}">
             <tr>
-              <td colspan="3">
+              <td colspan="2">
                 <label for="time">Zeit</label>
               </td>
-              <td colspan="4">
+              <td colspan="5">
                 <input type="time" value="{{ time_value }}" name="time" id="time" step="60">
               </td>
             </tr>
             <tr>
-              <td colspan="3">
+              <td colspan="2">
                 <label for="daily">Täglich</label>
               </td>
-              <td colspan="4">
+              <td colspan="5">
                 <input type="checkbox" {{ daily }} name="daily" id="daily">
               </td>
             </tr>
@@ -54,11 +54,20 @@
               </td>
             </tr>
             <tr>
-              <td colspan="3">Power</td>
-              <td colspan="4">
+              <td colspan="2">Power</td>
+              <td colspan="5">
                 <input type="radio" id="on" name="power" value="on" {{ on }}>
                 <label for="on">ON</label><br>
                 <input type="radio" id="off" name="power" value="off" {{ off }}>
+                <label for="off">OFF</label><br>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">Disable</td>
+              <td colspan="4">
+                <input type="radio" id="on" name="disable" value="#" {{ don }}>
+                <label for="on">ON</label><br>
+                <input type="radio" id="off" name="disable" value="" {{ doff }}>
                 <label for="off">OFF</label><br>
               </td>
             </tr>
