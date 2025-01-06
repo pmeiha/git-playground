@@ -1,12 +1,10 @@
 from flask import url_for
-from dotenv import load_dotenv
-from pprint import pprint
 from markupsafe import escape
 import requests
 import dns.resolver
 import os
 import sys
-
+exit
 ###################################################################################
 # search config according "tag" and "dev" 
 # if no dev specific availabel it will return the "all" value
@@ -34,6 +32,7 @@ def scan_device(ip_prefix, start, end):
     for i in range(start, end+1):
         ip = f'{ip_prefix}.{i}'
         request_url = f'http://{ip}'
+        print(request_url)
         try:
             scan_data = requests.get(request_url, timeout=1)
             if b'OpenBK7231T' in scan_data.content:
@@ -218,9 +217,9 @@ def get_table(text_in, without_action=False, spec_nr=0):
             else:
                 disable = ""    
             if without_action:
-                hline = f'<tr{spec_tag}><td>&nbsp;{disable}</td><td>{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>'
+                hline = f'<tr{spec_tag}><td>&nbsp;{disable}</td><td>{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[4])}</td></tr>'
             else:
-                hline = f'<tr{spec_tag}><td>{line_form(line_nr)}</td><td>&nbsp;{disable}</td><td>{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[5])}</td></tr>'
+                hline = f'<tr{spec_tag}><td>{line_form(line_nr)}</td><td>&nbsp;{disable}</td><td>{escape(sline[1])}</td><td>&nbsp;{escape(get_days(sline[2], True))}</td><td>&nbsp;{escape(sline[4])}</td></tr>'
             line_nr += 1
 
         text_out += hline

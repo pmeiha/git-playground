@@ -48,7 +48,7 @@ def get_dev():
 
     scan_list = search_config(config_file_content, 'server', 'scan' ).split()
     if len(scan_list) < 3:
-        scan_list=['1.2.3', '10', '30']
+        scan_list=['1.2.3', '4', '5']
 
     device_list = scan_device(scan_list[0], int(scan_list[1]), int(scan_list[2]))
     return render_template('get_dev.html',
@@ -130,10 +130,10 @@ def edit_line():
             #     if bit == "1":
             #         daily[i] = "checked"
             #     i += 1
-            print("power: ", sline[5])
+            print("power: ", sline[4])
             pon = ""
             poff = "checked"
-            if sline[5] == "on":
+            if sline[4] == "P_on":
                 pon = "checked"
                 poff = ""
             if disabled:
@@ -181,7 +181,7 @@ def edit_line():
 
         elif action == "insert":
             timer_text.insert(
-                line_nr, "addClockEvent 00:00 0xff 1 power off")
+                line_nr, "addClockEvent 00:00 0xff 1 P_off")
             return render_template(
                 "edit_line.html",
                 title=f'{dev_name} ({dev_ip})',
@@ -243,7 +243,7 @@ def store_line():
     fr = request.args.get('fr', "0")
     sa = request.args.get('sa', "0")
     so = request.args.get('so', "0")
-    power = request.args.get('power', "off")
+    power = f'P_{request.args.get('power', "off")}'
     disable = request.args.get('disable')
 
     print(type(mo))
@@ -254,7 +254,7 @@ def store_line():
             int(do) + int(fr) + int(sa) + int(so)
         days = f'0x{day_nr:0>2x}'
     print("days: ", days)
-    timer_text[int(line_nr)] = f'{disable}addClockEvent {time} {days} {line_nr} power {power}'
+    timer_text[int(line_nr)] = f'{disable}addClockEvent {time} {days} {line_nr} {power}'
 
     startedit = True
     power_state = get_state(dev_ip)
