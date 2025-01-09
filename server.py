@@ -243,7 +243,7 @@ def store_line():
     fr = request.args.get('fr', "0")
     sa = request.args.get('sa', "0")
     so = request.args.get('so', "0")
-    power = f'P_{request.args.get('power', "off")}'
+    power = f'P_{request.args.get("power", "off")}'
     disable = request.args.get('disable')
 
     print(type(mo))
