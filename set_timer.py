@@ -75,8 +75,13 @@ def get_state(dev_ip):
     if ret_data.status_code != 200:
         retVal = "NOK"
     else:
-        retVal = ret_data.json()['POWER']    
+        try:
+            retVal = ret_data.json()['POWER']
+        except Exception as err:
+            print(f"Unexpected {err=}, {type(err)=}")
+            retVal = "unknown"
 
+    print("get_state")
     return retVal
 
 
