@@ -57,7 +57,7 @@ def set_state(dev_ip):
 
     request_url = f'http://{dev_ip}/cm'
 
-    ret_data = requests.post(request_url, data = {'cmnd' : "power toggle"} )
+    ret_data = requests.post(request_url, data = {'cmnd' : "p_toggle"} )
 
     if ret_data.status_code != 200:
         retVal = "NOK"

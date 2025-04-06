@@ -212,7 +212,7 @@ def edit_line():
             return render_template(
                 "timer.html",
                 title=f'{dev_name} ({dev_ip})',
-                rc_code=timer_data.status_code,
+                rc_code=200,
                 current_line=get_table(timer_text),
                 current_state=f'toggle ({power_state})',
                 dev_ip=dev_ip,
